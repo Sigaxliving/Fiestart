@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiestart – Panel de Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Admin-only body override */
+    body.admin-page { overflow-x: hidden; }
+  </style>
+</head>
+<body class="admin-page">
+
+  <!-- ════════ PANTALLA DE LOGIN ADMIN ════════ -->
+  <div class="admin-login-screen" id="admin-login-screen">
+    <div class="admin-login-box">
+      <div class="admin-login-header">
+        <div class="logo-icon">⚙️</div>
+        <h1>Panel de Administración</h1>
+        <p>Accede con tus credenciales de administrador</p>
+      </div>
+
+      <form id="admin-login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="admin-username">Usuario</label>
+          <input type="text" id="admin-username" class="form-input" placeholder="admin" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="admin-password">Contraseña</label>
+          <input type="password" id="admin-password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <p class="form-error" id="admin-login-error" role="alert"></p>
+        <button type="submit" class="btn-form-primary" id="btn-admin-login">Acceder al Panel</button>
+      </form>
+
+      <div style="text-align:center;margin-top:22px;">
+        <a href="index.html" style="font-size:13px;color:var(--text-2);transition:var(--t);"
+           onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-2)'">
+          ← Volver al sitio principal
+        </a>
+      </div>
+      <p style="text-align:center;font-size:11px;color:var(--text-3);margin-top:14px;">
+        Credenciales por defecto: <code style="color:var(--gold)">admin</code> / <code style="color:var(--gold)">admin123</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════ PANEL PRINCIPAL ════════ -->
+  <div class="admin-panel hidden" id="admin-panel">
+
+    <!-- ──── SIDEBAR ──── -->
+    <aside class="admin-sidebar" aria-label="Navegación del panel">
+      <div class="admin-sidebar-header">
+        <div class="nav-logo">
+          <div class="logo-icon">🎉</div>
+          <span class="logo-text">Fiest<span>art</span></span>
+        </div>
+        <div class="admin-sidebar-subtitle">Panel Admin</div>
+      </div>
+
+      <nav class="admin-sidebar-nav" aria-label="Secciones">
+        <button class="admin-nav-item active" data-section="dashboard" id="nav-dashboard" onclick="showSection('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="admin-nav-item" data-section="orders" id="nav-orders" onclick="showSection('orders')">
+          <span class="nav-icon">📋</span> Pedidos <span class="badge" id="sidebar-order-badge" style="display:none;margin-left:auto;background:var(--gold);color:#000;font-size:10px;padding:2px 7px;border-radius:10px;">0</span>
+        </button>
+        <button class="admin-nav-item" data-section="products" id="nav-products" onclick="showSection('products')">
+          <span class="nav-icon">📦</span> Productos
+        </button>
+        <button class="admin-nav-item" data-section="users" id="nav-users" onclick="showSection('users')">
+          <span class="nav-icon">👥</span> Usuarios
+        </button>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <button class="admin-nav-item" onclick="window.open('index.html','_blank')">
+          <span class="nav-icon">🌐</span> Ver sitio web
+        </button>
+        <button class="admin-nav-item" onclick="handleAdminLogout()"
+          style="color:var(--error);" id="btn-admin-logout">
+          <span class="nav-icon">🚪</span> Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- ──── CONTENIDO PRINCIPAL ──── -->
+    <main class="admin-main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="admin-section active" id="section-dashboard">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Dashboard</h1>
+          <span style="font-size:13px;color:var(--text-2)">Resumen general del negocio</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon">📋</div>
+            <div class="stat-card-value" id="stat-orders">0</div>
+            <div class="stat-card-label">Total Pedidos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">⏳</div>
+            <div class="stat-card-value" id="stat-pending-orders">0</div>
+            <div class="stat-card-label">Pedidos Pendientes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">📦</div>
+            <div class="stat-card-value" id="stat-products">0</div>
+            <div class="stat-card-label">Total Productos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">👥</div>
+            <div class="stat-card-value" id="stat-users">0</div>
+            <div class="stat-card-label">Usuarios Registrados</div>
+          </div>
+        </div>
+
+        <div class="admin-page-header" style="margin-top:10px;">
+          <h2 style="font-size:19px;font-weight:800;color:var(--white);">Productos Recientes</h2>
+          <button class="btn-primary" onclick="showSection('products')" id="btn-view-all">Ver todos →</button>
+        </div>
+        <div id="dashboard-recent" class="admin-products-grid"></div>
+      </div>
+
+      <!-- ── PEDIDOS ── -->
+      <div class="admin-section" id="section-orders">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Solicitudes de Alquiler</h1>
+          <div class="admin-search-row" style="margin-bottom:0">
+            <select class="form-input" id="order-status-filter" style="max-width:200px" onchange="filterAdminOrders()">
+              <option value="">Todos los estados</option>
+              <option value="pending">🟡 Pendiente</option>
+              <option value="confirmed">🟢 Confirmado</option>
+              <option value="delivered">🔵 Entregado</option>
+              <option value="completed">✅ Completado</option>
+              <option value="cancelled">❌ Cancelado</option>
+            </select>
+          </div>
+        </div>
+        <div id="admin-orders-list" aria-live="polite"></div>
+      </div>
+
+      <!-- ── PRODUCTOS ── -->
+      <div class="admin-section" id="section-products">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Productos</h1>
+          <button class="btn-primary" onclick="openProductModal()" id="btn-add-product">+ Agregar Producto</button>
+        </div>
+
+        <!-- Búsqueda y filtro -->
+        <div class="admin-search-row">
+          <input type="text" class="form-input" id="product-search"
+            placeholder="🔍 Buscar por nombre o descripción…"
+            style="max-width:320px;"
+            oninput="filterAdminProducts()">
+          <select class="form-input" id="product-cat-filter"
+            style="max-width:220px;"
+            onchange="filterAdminProducts()">
+            <option value="">Todas las categorías</option>
+            <option value="stands">🏪 Stands</option>
+            <option value="accesorios">🎈 Accesorios</option>
+            <option value="decoracion">✨ Decoración</option>
+            <option value="mobiliario">🪑 Mobiliario</option>
+          </select>
+        </div>
+
+        <div class="admin-products-grid" id="admin-products-list" aria-live="polite"></div>
+      </div>
+
+      <!-- ── USUARIOS ── -->
+      <div class="admin-section" id="section-users">
+        <div class="admin-page-header">
+          <h1 class="admin-page-title">Usuarios Registrados</h1>
+        </div>
+        <div id="admin-users-list" aria-live="polite"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ════════ OVERLAY + MODAL PRODUCTO (panel lateral) ════════ -->
+  <div class="admin-modal-overlay" id="admin-modal-overlay" onclick="closeProductModal()"></div>
+
+  <div class="admin-modal" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+    <div class="admin-modal-header">
+      <h2 class="admin-modal-title" id="product-modal-title">Nuevo Producto</h2>
+      <button class="cart-close" onclick="closeProductModal()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="admin-modal-body">
+      <form id="product-form" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="prod-name">Nombre del Producto *</label>
+          <input type="text" id="prod-name" class="form-input"
+            placeholder="Ej: Stand Moderno Premium 3×3m" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prod-description">Descripción *</label>
+          <textarea id="prod-description" class="form-input" rows="4"
+            placeholder="Describe el producto con todos sus detalles…" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="prod-price">Precio por día ($) *</label>
+            <input type="number" id="prod-price" class="form-input"
+              placeholder="0.00" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prod-category">Categoría *</label>
+            <select id="prod-category" class="form-input" required>
+              <option value="">Seleccionar…</option>
+              <option value="stands">🏪 Stands</option>
+              <option value="accesorios">🎈 Accesorios</option>
+              <option value="decoracion">✨ Decoración</option>
+              <option value="mobiliario">🪑 Mobiliario</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Imagen del Producto</label>
+          <div id="image-preview"></div>
+          <div class="image-upload-area" onclick="document.getElementById('image-input').click()"
+            id="upload-area" role="button" tabindex="0"
+            onkeydown="if(event.key==='Enter'){document.getElementById('image-input').click()}">
+            <input type="file" id="image-input" accept="image/*" style="display:none"
+              onchange="handleImageUpload(event)">
+            <p style="font-size:14px;color:var(--text-2);margin-bottom:5px;">📁 Haz clic para subir una imagen</p>
+            <p class="upload-hint">Formatos: PNG, JPG, WEBP — Máximo 2.5 MB</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-checkbox">
+            <input type="checkbox" id="prod-available" checked>
+            <span>Producto disponible para alquiler</span>
+          </label>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="admin-modal-footer">
+      <button type="button" class="btn-form-primary" style="flex:1" onclick="handleProductSave()" id="btn-save-product">
+        💾 Guardar Producto
+      </button>
+      <button type="button" class="btn-ghost" onclick="closeProductModal()" id="btn-cancel-product">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════ ADMIN TOASTS ════════ -->
+  <div id="admin-toast-container" aria-live="polite"></div>
+
+  <!-- ════════ SCRIPTS ════════ -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fiestart – Alquiler de stands y accesorios para fiestas y eventos. Calidad premium para tu celebración perfecta en Venezuela.">
+  <title>Fiestart – Alquiler de Stands y Accesorios para Fiestas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ════════ NAVBAR ════════ -->
+  <header class="navbar" id="navbar">
+    <a href="#inicio" class="nav-logo">
+      <div class="logo-icon">🎉</div>
+      <span class="logo-text">Fiest<span>art</span></span>
+    </a>
+
+    <nav aria-label="Menú principal">
+      <ul class="nav-links">
+        <li><a href="#catalogo">Catálogo</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- Sin sesión -->
+      <div id="nav-auth">
+        <button class="btn-ghost" onclick="openLoginModal()" id="btn-open-login">Iniciar sesión</button>
+        <button class="btn-primary" onclick="openRegisterModal()">Registrarse</button>
+      </div>
+
+      <!-- Con sesión -->
+      <div id="nav-user" class="user-menu hidden">
+        <span class="user-greeting">Hola, <strong id="user-name"></strong></span>
+        <button class="btn-ghost" onclick="openOrdersModal()" id="btn-my-orders" style="padding:6px 12px;font-size:12px;">📋 Mis Pedidos</button>
+        <button class="btn-logout" onclick="handleLogout()">Cerrar sesión</button>
+      </div>
+
+      <!-- Carrito (solo con sesión) -->
+      <button id="nav-cart" class="cart-btn hidden" onclick="openCartSidebar()" aria-label="Abrir carrito">
+        🛒
+        <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════════ HERO ════════ -->
+  <section class="hero" id="inicio" aria-label="Inicio">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>✨</span>
+        <span>Alquiler Premium para Eventos</span>
+      </div>
+      <h1>Transforma tu <span>Fiesta</span> en un Evento Inolvidable</h1>
+      <p>Alquila stands, accesorios y decoración de alta calidad para que tu celebración sea el tema de conversación de todos.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary"
+          onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">
+          Ver Catálogo
+        </button>
+        <button class="btn-hero-secondary" onclick="openRegisterModal()">
+          Crear cuenta gratis
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="number">200+</div>
+          <div class="label">Eventos Realizados</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">50+</div>
+          <div class="label">Productos Disponibles</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">100%</div>
+          <div class="label">Clientes Satisfechos</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CATÁLOGO ════════ -->
+  <section class="section" id="catalogo" aria-labelledby="catalog-title">
+    <div class="section-header">
+      <span class="section-label">Nuestros Servicios</span>
+      <h2 class="section-title" id="catalog-title">Catálogo de Alquiler</h2>
+      <p class="section-subtitle">
+        Explora nuestra selección premium de stands y accesorios.
+        <span id="catalog-login-hint" style="display:none;color:var(--gold);font-weight:600"> Inicia sesión para agregar al carrito.</span>
+      </p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="category-filters" role="group" aria-label="Filtros de categoría">
+      <button class="filter-btn active" data-category="all"        onclick="filterCategory('all')">🔍 Todo</button>
+      <button class="filter-btn"        data-category="stands"     onclick="filterCategory('stands')">🏪 Stands</button>
+      <button class="filter-btn"        data-category="accesorios" onclick="filterCategory('accesorios')">🎈 Accesorios</button>
+      <button class="filter-btn"        data-category="decoracion" onclick="filterCategory('decoracion')">✨ Decoración</button>
+      <button class="filter-btn"        data-category="mobiliario" onclick="filterCategory('mobiliario')">🪑 Mobiliario</button>
+    </div>
+
+    <!-- Grid (renderizado por JS) -->
+    <div class="products-grid" id="products-grid" aria-live="polite"></div>
+  </section>
+
+  <!-- ════════ NOSOTROS ════════ -->
+  <section class="section" id="nosotros" style="background:var(--bg-2);" aria-labelledby="about-title">
+    <div class="section-header">
+      <span class="section-label">Por Qué Elegirnos</span>
+      <h2 class="section-title" id="about-title">Tu Evento, Nuestro Compromiso</h2>
+      <p class="section-subtitle">Garantizamos calidad, puntualidad y atención personalizada en cada alquiler.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="icon">🏆</div>
+        <h3>Calidad Premium</h3>
+        <p>Productos de alta calidad, revisados y mantenidos antes de cada alquiler para garantizar tu satisfacción total.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">🚚</div>
+        <h3>Entrega Puntual</h3>
+        <p>Entregamos y retiramos el material en el horario acordado. Tu comodidad y tranquilidad son nuestra prioridad.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">💡</div>
+        <h3>Asesoría Gratuita</h3>
+        <p>Nuestro equipo te ayuda a elegir los productos perfectos para el tipo y escala del evento que estás planeando.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CONTACTO ════════ -->
+  <section class="section" id="contacto" aria-labelledby="contact-title">
+    <div class="section-header">
+      <span class="section-label">Contáctanos</span>
+      <h2 class="section-title" id="contact-title">Estamos para Ayudarte</h2>
+      <p class="section-subtitle">¿Tienes preguntas o quieres hacer una cotización? Escríbenos o llámanos.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <span class="contact-icon">📞</span>
+        <div>
+          <h4>Teléfono</h4>
+          <p>+58 412-000-0000</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📧</span>
+        <div>
+          <h4>Correo Electrónico</h4>
+          <p>info@fiestart.com</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📍</span>
+        <div>
+          <h4>Ubicación</h4>
+          <p>Caracas, Venezuela</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FOOTER ════════ -->
+  <footer class="footer" aria-label="Pie de página">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo-text">Fiest<span>art</span></span>
+        <p>Especialistas en alquiler de stands y accesorios para fiestas y eventos. Hacemos realidad tus celebraciones más especiales.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="#catalogo">Stands</a></li>
+          <li><a href="#catalogo">Accesorios</a></li>
+          <li><a href="#catalogo">Decoración</a></li>
+          <li><a href="#catalogo">Mobiliario</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Mi Cuenta</h4>
+        <ul>
+          <li><a href="#" onclick="openLoginModal();return false;">Iniciar sesión</a></li>
+          <li><a href="#" onclick="openRegisterModal();return false;">Crear cuenta</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Fiestart. Todos los derechos reservados.</p>
+      <a href="admin.html" class="footer-admin-link">⚙️ Panel Admin</a>
+    </div>
+  </footer>
+
+  <!-- ════════ OVERLAY MODALES ════════ -->
+  <div class="modal-overlay" id="modal-overlay" role="presentation"></div>
+
+  <!-- ════════ MODAL LOGIN ════════ -->
+  <div class="modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <button class="modal-close" onclick="closeLoginModal()" aria-label="Cerrar">✕</button>
+    <h2 class="modal-title" id="login-title">Iniciar Sesión</h2>
+    <p class="modal-subtitle">Accede a tu cuenta para gestionar tu carrito.</p>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="login-cedula">Cédula de Identidad</label>
+        <input type="text" id="login-cedula" class="form-input"
+          placeholder="Ej: 12345678" inputmode="numeric" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Contraseña</label>
+        <input type="password" id="login-password" class="form-input"
+          placeholder="Tu contraseña" autocomplete="current-password" required>
+      </div>
+      <div class="form-group">
+        <label class="form-checkbox">
+          <input type="checkbox" id="login-remember">
+          <span>Recordarme por 30 días</span>
+        </label>
+      </div>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <button type="submit" class="btn-form-primary" id="btn-login-submit">Iniciar Sesión</button>
+    </form>
+
+    <div class="form-divider"><span>¿No tienes cuenta?</span></div>
+    <p class="form-link">
+      <button onclick="openRegisterModal()" id="btn-switch-to-register">Crear una cuenta gratis</button>
+    </p>
+  </div>
+
+  <!-- ════════ MODAL REGISTRO ════════ -->
+  <div class="modal" id="register-modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+    <button class="modal-close" onclick="closeRegisterModal()" aria-label="Cerrar">✕</button>
+    <h2 class="modal-title" id="register-title">Crear Cuenta</h2>
+    <p class="modal-subtitle">Regístrate para acceder al carrito de compras.</p>
+
+    <form id="register-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Nombre Completo</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="Tu nombre completo" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-cedula">Cédula (solo números)</label>
+          <input type="text" id="reg-cedula" class="form-input"
+            placeholder="Ej: 12345678" inputmode="numeric" pattern="[0-9]+" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Correo Electrónico</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="tu@correo.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Mín. 6 caracteres" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-confirm">Confirmar</label>
+          <input type="password" id="reg-confirm" class="form-input" placeholder="Repite la contraseña" required>
+        </div>
+      </div>
+      <p class="form-error" id="register-error" role="alert"></p>
+      <button type="submit" class="btn-form-primary" id="btn-register-submit">Crear Cuenta</button>
+    </form>
+
+    <div class="form-divider"><span>¿Ya tienes cuenta?</span></div>
+    <p class="form-link">
+      <button onclick="openLoginModal()" id="btn-switch-to-login">Iniciar sesión</button>
+    </p>
+  </div>
+
+  <!-- ════════ MODAL CHECKOUT / CONFIRMAR ALQUILER ════════ -->
+  <div class="modal" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title" style="max-width:540px;">
+    <button class="modal-close" onclick="closeCheckoutModal()" aria-label="Cerrar">✕</button>
+    <h2 class="modal-title" id="checkout-title">📅 Coordinar Alquiler</h2>
+    <p class="modal-subtitle">Indica la fecha y detalles para reservar tus productos.</p>
+
+    <form id="checkout-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="chk-date">Fecha del Evento *</label>
+          <input type="date" id="chk-date" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="chk-days">Días de Alquiler *</label>
+          <input type="number" id="chk-days" class="form-input" min="1" max="30" value="1" required oninput="updateCheckoutSummary()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="chk-phone">Teléfono de Contacto (WhatsApp) *</label>
+        <input type="tel" id="chk-phone" class="form-input" placeholder="Ej: +58 412 1234567" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="chk-address">Lugar / Dirección del Evento *</label>
+        <input type="text" id="chk-address" class="form-input" placeholder="Ej: Salón Las Rosas, Altamira, Caracas" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="chk-notes">Notas / Requerimientos Adicionales</label>
+        <textarea id="chk-notes" class="form-input" rows="2" placeholder="Hora preferida de entrega, indicaciones de acceso, etc."></textarea>
+      </div>
+
+      <!-- Cálculo total en vivo -->
+      <div style="background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--r);padding:14px 18px;margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:var(--text-2);">
+          <span>Subtotal por día:</span>
+          <span id="chk-daily-total" style="color:var(--white);font-weight:600;">$0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:var(--text-2);">
+          <span>Multiplicador de días:</span>
+          <span id="chk-days-multiplier" style="color:var(--white);font-weight:600;">× 1 día</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--gold);border-top:1px solid var(--border);padding-top:8px;">
+          <span>Total Estimado del Alquiler:</span>
+          <span id="chk-final-total">$0.00</span>
+        </div>
+      </div>
+
+      <p class="form-error" id="checkout-error" role="alert"></p>
+      <button type="submit" class="btn-form-primary" id="btn-submit-order">🎉 Confirmar y Enviar Pedido</button>
+    </form>
+  </div>
+
+  <!-- ════════ MODAL MIS PEDIDOS ════════ -->
+  <div class="modal" id="orders-modal" role="dialog" aria-modal="true" aria-labelledby="orders-title" style="max-width:620px;">
+    <button class="modal-close" onclick="closeOrdersModal()" aria-label="Cerrar">✕</button>
+    <h2 class="modal-title" id="orders-title">📋 Mis Solicitudes de Alquiler</h2>
+    <p class="modal-subtitle">Consulta el historial y estado de tus reservas.</p>
+    <div id="user-orders-container" style="max-height:420px;overflow-y:auto;margin-top:16px;" aria-live="polite"></div>
+  </div>
+
+
+  <!-- ════════ CARRITO SIDEBAR ════════ -->
+  <div class="cart-sidebar-overlay" id="cart-overlay" onclick="closeCartSidebar()"></div>
+  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Carrito de compras">
+    <div class="cart-header">
+      <h2 class="cart-title">🛒 Mi Carrito</h2>
+      <button class="cart-close" onclick="closeCartSidebar()" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items-list" aria-live="polite"></div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <span class="cart-total-label">Total estimado (por día):</span>
+        <span class="cart-total-amount" id="cart-total-amount">$0.00</span>
+      </div>
+      <button class="btn-checkout" id="btn-checkout" onclick="handleCheckout()">✅ Finalizar Pedido</button>
+      <button class="btn-clear-cart" id="btn-clear-cart" onclick="clearCart()">Vaciar carrito</button>
+    </div>
+  </aside>
+
+  <!-- ════════ TOASTS ════════ -->
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ════════ SCRIPTS ════════ -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.isLoggedIn()) {
+        const hint = document.getElementById('catalog-login-hint');
+        if (hint) hint.style.display = 'inline';
+      }
+    });
+  </script>
+</body>
+</html>
